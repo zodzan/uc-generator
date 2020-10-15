@@ -1,44 +1,44 @@
 {
-	"id": "UC-000",
+    "id": "UC-000",
     "title": "Use case title",
-	"primaryActor": "Client",
-	"scope": "Account system",
-	"level": "User",
-	"stakeholders": [
-		{
-			"name": "Client",
-			"goal": "Client wants to create a new account"
-		}
-	],
-	"preconditions": [
-		"Email is valid",
-		"Username is available"
-	],
-	"postconditions": [
-		"A new account is created"
-	],
-	"nominalCase": [
-		"User types an email",
-		"User types a username",
-		"User types a password"
-	],
-	"extensions": [
-		{
-			"name": "Invalid email",
+    "primaryActor": "Client",
+    "scope": "Account system",
+    "level": "User",
+    "stakeholders": [
+        {
+            "name": "Client",
+            "goal": "Client wants to create a new account"
+        }
+    ],
+    "preconditions": [
+        "Email is valid",
+        "Username is available"
+    ],
+    "postconditions": [
+        "A new account is created"
+    ],
+    "nominalCase": [
+        "User types an email",
+        "User types a username",
+        "User types a password"
+    ],
+    "extensions": [
+        {
+            "name": "Invalid email",
             "nominalStep": 1,
-			"steps": [
-				"User types an invalid email",
-				"System notifies user"
-			]
-		},
-		{
-			"name": "Unavailable username",
+            "steps": [
+                "User types an invalid email",
+                "System notifies user"
+            ]
+        },
+        {
+            "name": "Unavailable username",
             "nominalStep": 2,
-			"steps": [
-				"User types an unavailable username",
-				"System notifies user"
-			]
-		}
-	],
-	"other": "The system sends an email to the user to authenticate the account"
+            "steps": [
+                "User types an unavailable username",
+                "System notifies user"
+            ]
+        }
+    ],
+    "other": "The system sends an email to the user to authenticate the account"
 }
