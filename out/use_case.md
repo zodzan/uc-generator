@@ -1,6 +1,6 @@
-## __UC-000: Use case title__
+## __UC-000: Create account__
 
-__Use case:__ Use case title
+__Use case:__ Create account
 
 __Primary actor:__ Client
 
@@ -29,15 +29,14 @@ __Extensions:__
 
 * __Extension 1:__ Invalid email
 
-	1.1 User types an invalid email
+	1.0 User types an invalid email
 
-	1.2 System notifies user
+	1.1 System notifies user
 
 * __Extension 2:__ Unavailable username
 
-	2.1 User types an unavailable username
+	2.0 User types an unavailable username
 
-	2.2 System notifies user
-
+	2.1 System notifies user
 
 __Other:__ The system sends an email to the user to authenticate the account

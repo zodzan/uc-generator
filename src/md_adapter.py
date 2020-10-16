@@ -5,145 +5,109 @@ class MarkdownAdapter(UseCaseAdapter):
     def __init__(self):
         UseCaseAdapter.__init__(self)
 
-        self.TITLE = '## __{id}: {title}__\n'
-        self.SECTION = '\n__{section}:__ '
-        self.EXTENSION_SECTION = '* __Extension {i}:__ {extension}\n'
+        self.TITLE = '## __{id}: {uc}__\n'
+        self.SECTION = '\n__{s}:__ '
+        self.EXTENSION_SECTION = '\n* __Extension {i}:__ {e}\n'
         self.UNORDERED_ITEM = '- {item}\n'
         self.ORDERED_ITEM = '{i}. {item}\n'
         self.EXTENSION_ITEM = '\n\t{i}.{j} {item}\n'
 
-        self.USE_CASE = self.SECTION.format(section='Use case')
-        self.PRIMARY_ACTOR = self.SECTION.format(section='Primary actor')
-        self.SCOPE = self.SECTION.format(section='Scope')
-        self.LEVEL = self.SECTION.format(section='Level')
-        self.STAKEHOLDERS = self.SECTION.format(section='Stakeholders')
-        self.PRECONDITIONS = self.SECTION.format(section='Preconditions')
-        self.POSTCONDITIONS = self.SECTION.format(section='Postconditions')
-        self.NOMINAL_CASE = self.SECTION.format(section='Nominal case')
-        self.EXTENSIONS = self.SECTION.format(section='Extensions')
-        self.OTHER = self.SECTION.format(section='Other')
-        
-        self.EXTENSION_DATA = {
-                'subsection': '',
-                'steps': []
-                }
+        self.USE_CASE = self.SECTION.format(s='Use case')
+        self.PRIMARY_ACTOR = self.SECTION.format(s='Primary actor')
+        self.SCOPE = self.SECTION.format(s='Scope')
+        self.LEVEL = self.SECTION.format(s='Level')
+        self.STAKEHOLDERS = self.SECTION.format(s='Stakeholders')
+        self.PRECONDITIONS = self.SECTION.format(s='Preconditions')
+        self.POSTCONDITIONS = self.SECTION.format(s='Postconditions')
+        self.NOMINAL_CASE = self.SECTION.format(s='Nominal case')
+        self.EXTENSIONS = self.SECTION.format(s='Extensions')
+        self.OTHER = self.SECTION.format(s='Other')
 
-        self.data = {
-                'title': '',
-                'use_case': '',
-                'primary_actor': '',
-                'scope': '',
-                'stakeholders': {
-                    'section': '',
-                    'items': [] 
-                    },
-                'preconditions': {
-                    'section': '',
-                    'items': []
-                    },
-                'postconditions': {
-                    'section': '',
-                    'items': []
-                    },
-                'nominal_case': {
-                    'section': '',
-                    'items': []
-                    },
-                'extensions': {
-                    'section': '',
-                    'items': []
-                    },
-                'other': ''
-                }
+        self._reset_text_data()
 
-    def convert_data(self, data):
-        self.data['title'] = self.TITLE.format(
-                id=data['id'],
-                title=data['title'])
-        self.data['use_case'] = self.USE_CASE + data['title'] + '\n'
-        self.data['primary_actor'] = self.PRIMARY_ACTOR + data['primaryActor'] \
-                + '\n'
-        self.data['scope'] = self.SCOPE + data['scope'] + '\n' 
-        self.data['level'] = self.LEVEL + data['level'] + '\n'
-        
-        self.data['stakeholders']['section'] = self.STAKEHOLDERS
-        stakeholder_str = '{item}\n'
-        if len(data['stakeholders']) > 1:
-            self.data['stakeholders']['section'] += '\n\n'
-            stakeholder_str = self.UNORDERED_ITEM
+    def _reset_text_data(self):
+        self.text_data['use_case'] = self.USE_CASE
+        self.text_data['primary_actor'] = self.PRIMARY_ACTOR
+        self.text_data['scope'] = self.SCOPE
+        self.text_data['level'] = self.LEVEL
+        self.text_data['stakeholders'] = self.STAKEHOLDERS
+        self.text_data['preconditions'] = self.PRECONDITIONS
+        self.text_data['postconditions'] = self.POSTCONDITIONS
+        self.text_data['nominal_case'] = self.NOMINAL_CASE
+        self.text_data['extensions'] = self.EXTENSIONS
+        self.text_data['other'] = self.OTHER
 
-        for s in data['stakeholders']:
-            item = stakeholder_str.format(item=s['goal']) 
-            self.data['stakeholders']['items'].append(item)
+    def _convert_unordered_list(self, item_str, items):
+        unordered_list = '\n\n'
+        for item in items:
+            item_text = item_str.format(item=item)
+            unordered_list += item_text
+        return unordered_list
 
-        self.data['preconditions']['section'] = self.PRECONDITIONS + '\n\n'
-        for i in range(len(data['preconditions'])):
-            item = self.ORDERED_ITEM.format(
-                    i=i+1, 
-                    item=data['preconditions'][i])
-            self.data['preconditions']['items'].append(item)
+    def _convert_ordered_list(self, item_str, items):
+        ordered_list = '\n\n'
+        for i in range(len(items)):
+            item_text = item_str.format(i=i+1, item=items[i])
+            ordered_list += item_text
 
-        self.data['postconditions']['section'] = self.POSTCONDITIONS + '\n\n'
-        for i in range(len(data['postconditions'])):
-            item = self.ORDERED_ITEM.format(
-                    i=i+1,
-                    item=data['postconditions'][i])
-            self.data['postconditions']['items'].append(item)
+        return ordered_list
 
-        self.data['nominal_case']['section'] = self.NOMINAL_CASE + '\n\n'
-        for i in range(len(data['nominalCase'])):
-            item = self.ORDERED_ITEM.format(
-                    i=i+1,
-                    item=data['nominalCase'][i])
-            self.data['nominal_case']['items'].append(item)
+    def _convert_extension_steps(self, step_str, nominal_step, steps):
+        extension_steps = ''
+        for i in range(len(steps)):
+            step_text = step_str.format(i=nominal_step, j=i, item=steps[i])
+            extension_steps += step_text 
 
-        self.data['extensions']['section'] = self.EXTENSIONS + '\n\n'
-        extensions = data['extensions']
-        for e in extensions:
-            item = { 'subsection': '', 'steps': [] }
-            item['subsection'] = self.EXTENSION_SECTION.format(
-                    i=e['nominalStep'], 
-                    extension=e['name']) 
-            for j in range(len(e['steps'])):
-                step = self.EXTENSION_ITEM.format(
-                        i=e['nominalStep'], 
-                        j=j+1,
-                        item=e['steps'][j])
-                item['steps'].append(step)
-            item['steps'][-1] += '\n'
-            self.data['extensions']['items'].append(item)
+        return extension_steps 
 
-        self.data['other'] = self.OTHER + data['other']
+    def convert_data(self, json_data):
+        UseCaseAdapter.convert_data(self, json_data)
+        self._reset_text_data()
 
-    def export(self, fp):
-        with open(fp, 'w') as f:
-            f.write(self.data['title'])
-            f.write(self.data['use_case'])
-            f.write(self.data['primary_actor'])
-            f.write(self.data['scope'])
-            f.write(self.data['level'])
-            
-            f.write(self.data['stakeholders']['section'])
-            for s in self.data['stakeholders']['items']:
-                f.write(s)
+        self.text_data['title'] = self.TITLE.format(
+                id=self.data['id'],
+                uc=self.data['use_case'])
+        self.text_data['use_case'] += self.data['use_case'] + '\n'
+        self.text_data['primary_actor'] += self.data['primary_actor'] + '\n'
+        self.text_data['scope'] += self.data['scope'] + '\n'
+        self.text_data['level'] += self.data['level'] + '\n'
+        self.text_data['other'] += self.data['other'] + '\n'
 
-            f.write(self.data['preconditions']['section'])
-            for p in self.data['preconditions']['items']:
-                f.write(p)
+        stakeholders_text = ''
+        if len(self.data['stakeholders']) > 1:
+            goals = [stakeholder['goal'] \
+                    for stakeholder \
+                    in self.data['stakeholders']]
+            stakeholders_text = self._convert_unordered_list(
+                    self.UNORDERED_ITEM, 
+                    goals)
+        elif len(self.data['stakeholders']) > 0:
+            stakeholders_text = self.data['stakeholders'][0]['goal'] + '\n'
+        self.text_data['stakeholders'] += stakeholders_text         
 
-            f.write(self.data['postconditions']['section'])
-            for p in self.data['postconditions']['items']:
-                f.write(p)
+        preconditions_text = self._convert_ordered_list(
+                self.ORDERED_ITEM,
+                self.data['preconditions'])
+        self.text_data['preconditions'] += preconditions_text
 
-            f.write(self.data['nominal_case']['section'])
-            for nc in self.data['nominal_case']['items']:
-                f.write(nc)
+        postconditions_text = self._convert_ordered_list(
+                self.ORDERED_ITEM,
+                self.data['postconditions'])
+        self.text_data['postconditions'] += postconditions_text
 
-            f.write(self.data['extensions']['section'])
-            for e in self.data['extensions']['items']:
-                f.write(e['subsection'])
-                for s in e['steps']:
-                    f.write(s)
+        nominal_case_text = self._convert_ordered_list(
+                self.ORDERED_ITEM,
+                self.data['nominal_case'])
+        self.text_data['nominal_case'] += nominal_case_text
 
-            f.write(self.data['other'])
-            f.close()
+        extensions_text = '\n'
+        for extension in self.data['extensions']:
+            extension_str = self.EXTENSION_SECTION.format(
+                i=extension['nominal_step'],
+                e=extension['extension'])
+            steps_text = self._convert_extension_steps(
+                    self.EXTENSION_ITEM,
+                    extension['nominal_step'],
+                    extension['steps'])
+            extensions_text += extension_str + steps_text
+        self.text_data['extensions'] += extensions_text

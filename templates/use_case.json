@@ -1,12 +1,12 @@
 {
     "id": "UC-000",
-    "title": "Use case title",
+    "useCase": "Create account",
     "primaryActor": "Client",
     "scope": "Account system",
     "level": "User",
     "stakeholders": [
         {
-            "name": "Client",
+            "stakeholder": "Client",
             "goal": "Client wants to create a new account"
         }
     ],
@@ -24,7 +24,7 @@
     ],
     "extensions": [
         {
-            "name": "Invalid email",
+            "extension": "Invalid email",
             "nominalStep": 1,
             "steps": [
                 "User types an invalid email",
@@ -32,7 +32,7 @@
             ]
         },
         {
-            "name": "Unavailable username",
+            "extension": "Unavailable username",
             "nominalStep": 2,
             "steps": [
                 "User types an unavailable username",
