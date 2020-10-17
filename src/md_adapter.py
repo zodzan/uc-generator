@@ -23,9 +23,8 @@ class MarkdownAdapter(UseCaseAdapter):
         self.EXTENSIONS = self.SECTION.format(s='Extensions')
         self.OTHER = self.SECTION.format(s='Other')
 
-        self._reset_text_data()
-
     def _reset_text_data(self):
+        self.text_data['title'] = ''
         self.text_data['use_case'] = self.USE_CASE
         self.text_data['primary_actor'] = self.PRIMARY_ACTOR
         self.text_data['scope'] = self.SCOPE

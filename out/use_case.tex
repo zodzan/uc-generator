@@ -1,0 +1,60 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{enumitem}
+
+\newcommand{\createsection}[1]{\noindent\textbf{#1}:}
+\newcommand{\createextension}[2]{\noindent\hspace*{0.8em}\textbf{#1}: #2}
+
+\newlist{extension}{enumerate}{1}
+\setlist[extension]{label=\arabic*., left=1.6em}
+
+\begin{document}\subsection{UC-000: Create account}
+
+\createsection{Use case} Create account
+
+\createsection{Primary actor} Client
+
+\createsection{Scope} Account system
+
+\createsection{Level} User
+
+\createsection{Stakeholders} Client wants to create a new account
+
+\createsection{Preconditions} 
+\begin{enumerate}
+\item Email is valid
+\item Username is available
+\end{enumerate}
+
+\createsection{Postconditions} 
+\begin{enumerate}
+\item A new account is created
+\end{enumerate}
+
+\createsection{Nominal case} 
+\begin{enumerate}
+\item User types an email
+\item User types a username
+\item User types a password
+\end{enumerate}
+
+\createsection{Extensions} 
+
+\vspace{1em}
+\createextension{Extension 1}{Invalid email}
+\begin{extension}[label=1.\arabic*]
+\item User types an invalid email
+\item System notifies user
+\end{extension}
+\createextension{Extension 2}{Unavailable username}
+\begin{extension}[label=2.\arabic*]
+\item User types an unavailable username
+\item System notifies user
+\end{extension}
+
+\createsection{Other} The system sends an email to the user to authenticate the account
+
+\end{document}
